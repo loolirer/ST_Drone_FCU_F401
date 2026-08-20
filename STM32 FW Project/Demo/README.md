@@ -65,7 +65,7 @@ plus 3 s, whatever else happens.
 | File | Change |
 |---|---|
 | `Src/main.c` | BLE, USB, ADC, TIM2/receiver and the software timer removed. Adds the flight-profile state machine. Sensor read, offset calibration, gyro IIR, FIFO and yaw integration are unchanged. |
-| `Src/flight_control.c` | Removed the `0.05f*gTHR + 633.333f` throttle mapping. `motor_thr` is now written directly by `main.c` in raw PWM counts. Deleted the two dead functions, `FlightControlPID()` and `PIDOuterLoopFrameTrans()`. Both live loops are otherwise byte-for-byte unchanged. |
+| `Src/flight_control.c` | Removed the throttle mapping. `motor_thr` is now written directly by `main.c` in raw PWM counts. Deleted the two dead functions, `FlightControlPID()` and `PIDOuterLoopFrameTrans()`. |
 | `Inc/flight_control.h` | Dropped the two deleted prototypes. All gains untouched. |
 | `Inc/config_drone.h` | `USE_MAG_SENSOR` and `USE_PRESSURE_SENSOR` set to 0. Neither was ever used for control, and this saves two SPI transactions per 807.7 Hz tick. |
 | `Src/stm32f4xx_it.c` | Removed the TIM2 and USB handlers. `EXTI4_IRQHandler` is deliberately kept, because `HAL_SPI_MspInit(SPI1)` enables `EXTI4_IRQn` and an unhandled EXTI4 would hard-fault. |
@@ -86,17 +86,9 @@ between 10.0 and 0.4 and still gates the integrator resets.
   `lsm6ds33.h`, `lis3mdl.h` and `lps25hb.h`, none of which exist in this tree; it is a
   leftover from a different board variant and was never compiled.
 - Projects: only the CubeIDE project is kept. EWARM, MDK-ARM, SW4STM32 and TrueSTUDIO were
-  dropped along with the stale `Debug/` build artifacts and the `.ioc`. Regenerating from
-  CubeMX would put BLE and USB straight back.
+  dropped along with the stale `Debug/` build artifacts and the `.ioc`.
 
 The CubeIDE project links each source file individually. Its links and include paths have been
 pruned to match: 51 file links, all verified to resolve. The project is renamed
-"ToyDrone Demo - Tethered Auto-Hover" so it does not collide with the original in the same
+"ToyDrone Demo - Auto-Hover" so it does not collide with the original in the same
 workspace.
-
-## Not verified
-
-This has not been compiled, as there was no `arm-none-eabi-gcc` available. What was checked:
-brace and paren balance; that every symbol removed from `main.c` has no remaining referrer;
-that all 51 project links resolve; that every `#include` in `Src/*.c` is findable on the
-include path; and that TIM9's NVIC setup in `HAL_TIM_Base_MspInit` is untouched.
