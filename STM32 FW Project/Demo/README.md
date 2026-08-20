@@ -64,7 +64,7 @@ plus 3 s, whatever else happens.
 
 | File | Change |
 |---|---|
-| `Src/main.c` | Rewritten, 1377 → 585 lines. BLE, USB, ADC, TIM2/receiver and the software timer removed. Adds the flight-profile state machine. Sensor read, offset calibration, gyro IIR, FIFO and yaw integration are unchanged. |
+| `Src/main.c` | BLE, USB, ADC, TIM2/receiver and the software timer removed. Adds the flight-profile state machine. Sensor read, offset calibration, gyro IIR, FIFO and yaw integration are unchanged. |
 | `Src/flight_control.c` | Removed the `0.05f*gTHR + 633.333f` throttle mapping. `motor_thr` is now written directly by `main.c` in raw PWM counts. Deleted the two dead functions, `FlightControlPID()` and `PIDOuterLoopFrameTrans()`. Both live loops are otherwise byte-for-byte unchanged. |
 | `Inc/flight_control.h` | Dropped the two deleted prototypes. All gains untouched. |
 | `Inc/config_drone.h` | `USE_MAG_SENSOR` and `USE_PRESSURE_SENSOR` set to 0. Neither was ever used for control, and this saves two SPI transactions per 807.7 Hz tick. |
